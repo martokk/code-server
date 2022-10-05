@@ -8,7 +8,7 @@ COPY deploy-container/settings.json .local/share/code-server/User/settings.json
 
 # Install Inital Dependencies
 RUN sudo apt-get update
-sudo apt-get install unzip make -y
+RUN sudo apt-get install unzip make -y
 RUN curl https://rclone.org/install.sh | sudo bash
 
 # Copy rclone tasks to /tmp, to potentially be used
