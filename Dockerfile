@@ -17,21 +17,16 @@ COPY deploy-container/rclone-tasks.json /tmp/rclone-tasks.json
 # Fix permissions for code-server
 RUN sudo chown -R coder:coder /home/coder/.local
 
-
-# -----------------------------------------------
-# ------ CUSTOM ---------------------------------
-# -----------------------------------------------
-
-# Install Dotfiles
-RUN git clone https://github.com/martokk/dotfiles-dev /home/coder/dotfiles-dev
-RUN make -C /home/coder/dotfiles-dev install
-
 # Install ZSH, set shell to zsh
 RUN sudo apt-get install zsh -y
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/coder/.oh-my-zsh/plugins/zsh-autosuggestions
 RUN echo "source ~/.oh-my-zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /home/coder/.zshrc
 ENV SHELL=/bin/zsh
+
+# Install Dotfiles
+RUN git clone https://github.com/martokk/dotfiles-dev /home/coder/dotfiles-dev
+RUN make -C /home/coder/dotfiles-dev install
 
 # Add JetBrains Mono font
 WORKDIR /usr/lib/code-server
@@ -59,10 +54,6 @@ RUN code-server --install-extension KevinRose.vsc-python-indent
 
 # Other Extensions from https://open-vsx.org/
 RUN code-server --install-extension esbenp.prettier-vscode
-
-# -----------------------------------------------
-# -----------------------------------------------
-# -----------------------------------------------
 
 # Port
 ENV PORT=8080
