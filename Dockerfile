@@ -7,15 +7,20 @@ USER coder
 COPY deploy-container/settings.json .local/share/code-server/User/settings.json
 
 # Install Inital Dependencies
+RUN sudo add-apt-repository ppa:deadsnakes/ppa -y
 RUN sudo apt-get update
-RUN sudo apt-get install unzip make -y
+RUN sudo apt-get install unzip make nano git curl wget -y
 RUN curl https://rclone.org/install.sh | sudo bash
 
 # Copy rclone tasks to /tmp, to potentially be used
 COPY deploy-container/rclone-tasks.json /tmp/rclone-tasks.json
-
+code --list-extensions
 # Fix permissions for code-server
 RUN sudo chown -R coder:coder /home/coder/.local
+
+# Install Dotfiles
+RUN git clone https://github.com/martokk/dotfiles /home/coder/dotfiles
+RUN make -C /home/coder/dotfiles install profile=dev
 
 # Install ZSH, set shell to zsh
 RUN sudo apt-get install zsh -y
@@ -24,36 +29,48 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/coder/.oh-m
 RUN echo "source ~/.oh-my-zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /home/coder/.zshrc
 ENV SHELL=/bin/zsh
 
-# Install Dotfiles
-RUN git clone https://github.com/martokk/dotfiles-dev /home/coder/dotfiles-dev
-RUN make -C /home/coder/dotfiles-dev install
+# Setup Python3 Environment
+# RUN sudo apt-get install python3-dev python3-pip -y
+# RUN python3 -m pip install pip
+# RUN python3 -m pip install wheel
 
-# Add JetBrains Mono font
-WORKDIR /usr/lib/code-server
-RUN find . -name workbench.html | sudo xargs sed -i "s%</head>%<style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono\&display=swap');</style></head>%g"
-
-# Setup python development
-RUN sudo apt-get update
-RUN sudo apt-get install python3-dev python3-pip nano git curl wget -y
-RUN python3 -m pip install pip
-RUN python3 -m pip install wheel
+# Setup Python3.10 Environment
+RUN sudo apt-get install python3.10 python3.10-dev python3.10-venv python3.10-distutils python3.10-tk
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+RUN python3.10 -m pip install --upgrade pip
+RUN python3.10 -m pip install wheel
 
 # Add Python Extentions
-RUN code-server --install-extension ms-python.python
+RUN code-server --install-extension 2gua.rainbow-brackets
+RUN code-server --install-extension aaron-bond.better-comments
+RUN code-server --install-extension christian-kohler.path-intellisense
+RUN code-server --install-extension donjayamanne.python-environment-manager
+RUN code-server --install-extension esbenp.prettier-vscode
+RUN code-server --install-extension formulahendry.code-runner
+RUN code-server --install-extension hyesun.py-paste-indent
+RUN code-server --install-extension johnpapa.vscode-peacock
+RUN code-server --install-extension kde.breeze
+RUN code-server --install-extension KevinRose.vsc-python-indent
+RUN code-server --install-extension marclipovsky.string-manipulation
 RUN code-server --install-extension ms-python.black-formatter
+RUN code-server --install-extension ms-python.python
+RUN code-server --install-extension ms-python.vscode-pylance
 RUN code-server --install-extension ms-toolsai.jupyter
+RUN code-server --install-extension ms-vscode.makefile-tools
+RUN code-server --install-extension njqdev.vscode-python-typehint
+RUN code-server --install-extension oderwat.indent-rainbow
+RUN code-server --install-extension patrick91.python-dependencies-vscode
+RUN code-server --install-extension piotrpalarz.vscode-gitignore-generator
 RUN code-server --install-extension redhat.vscode-yaml
+RUN code-server --install-extension sdras.night-owl
 RUN code-server --install-extension SonarSource.sonarlint-vscode
 RUN code-server --install-extension sourcery.sourcery
-RUN code-server --install-extension formulahendry.code-runner
-RUN code-server --install-extension KevinRose.vsc-python-indent
-
-# Add Dart/Flutter Extentions
-# RUN code-server --install-extension Dart-Code.dart-code
-# RUN code-server --install-extension Dart-Code.flutter
-
-# Other Extensions from https://open-vsx.org/
-RUN code-server --install-extension esbenp.prettier-vscode
+RUN code-server --install-extension streetsidesoftware.code-spell-checker
+RUN code-server --install-extension truman.autocomplate-shell
+RUN code-server --install-extension usernamehw.errorlens
+RUN code-server --install-extension VisualStudioExptTeam.intellicode-api-usage-examples
+RUN code-server --install-extension VisualStudioExptTeam.vscodeintellicode
+RUN code-server --install-extension VisualStudioExptTeam.vscodeintellicode-completions
 
 # Port
 ENV PORT=8080
