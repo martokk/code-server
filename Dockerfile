@@ -34,6 +34,7 @@ ENV SHELL=/bin/zsh
 
 # Setup Python3.10 Environment
 RUN echo "deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy Release" | sudo tee /etc/apt/sources.list.d/deadsnakes.list
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA6932366A755776
 RUN sudo apt-get update
 RUN sudo apt-get install python3.10 python3.10-dev python3.10-venv python3.10-distutils python3.10-tk
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
