@@ -11,7 +11,7 @@ RUN sudo chown -R coder:coder /home/coder/.local
 
 # Install Inital Dependencies
 RUN sudo apt-get update
-RUN sudo apt install software-properties-common fontconfig unzip make nano git curl wget zsh -y
+RUN sudo apt install software-properties-common fontconfig gpg unzip make nano git curl wget zsh -y
 RUN curl https://rclone.org/install.sh | sudo bash
 
 # Copy rclone tasks to /tmp, to potentially be used
