@@ -33,7 +33,8 @@ ENV SHELL=/bin/zsh
 # RUN python3 -m pip install wheel
 
 # Setup Python3.10 Environment
-RUN sudo add-apt-repository ppa:deadsnakes/ppa -y
+RUN deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy Release
+RUN deb-src http://ppa.launchpad.net/deadsnakes/ppa/ubuntu jammy Release
 RUN sudo apt-get update
 RUN sudo apt-get install python3.10 python3.10-dev python3.10-venv python3.10-distutils python3.10-tk
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
