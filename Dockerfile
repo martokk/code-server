@@ -6,24 +6,23 @@ USER coder
 # Apply VS Code settings
 COPY deploy-container/settings.json .local/share/code-server/User/settings.json
 
+# Fix permissions for code-server
+RUN sudo chown -R coder:coder /home/coder/.local
+
 # Install Inital Dependencies
-RUN sudo add-apt-repository ppa:deadsnakes/ppa -y
 RUN sudo apt-get update
-RUN sudo apt-get install unzip make nano git curl wget -y
+RUN sudo apt install software-properties-common unzip make nano git curl wget zsh -y
 RUN curl https://rclone.org/install.sh | sudo bash
 
 # Copy rclone tasks to /tmp, to potentially be used
 COPY deploy-container/rclone-tasks.json /tmp/rclone-tasks.json
 RUN code --list-extensions
-# Fix permissions for code-server
-RUN sudo chown -R coder:coder /home/coder/.local
 
 # Install Dotfiles
 RUN git clone https://github.com/martokk/dotfiles /home/coder/dotfiles
 RUN make -C /home/coder/dotfiles install profile=dev
 
 # Install ZSH, set shell to zsh
-RUN sudo apt-get install zsh -y
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/coder/.oh-my-zsh/plugins/zsh-autosuggestions
 RUN echo "source ~/.oh-my-zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" >> /home/coder/.zshrc
@@ -35,6 +34,7 @@ ENV SHELL=/bin/zsh
 # RUN python3 -m pip install wheel
 
 # Setup Python3.10 Environment
+RUN sudo add-apt-repository ppa:deadsnakes/ppa -y
 RUN sudo apt-get install python3.10 python3.10-dev python3.10-venv python3.10-distutils python3.10-tk
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
 RUN python3.10 -m pip install --upgrade pip
