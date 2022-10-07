@@ -15,10 +15,6 @@ RUN curl https://rclone.org/install.sh | sudo bash
 # Copy rclone tasks to /tmp, to potentially be used
 COPY deploy-container/rclone-tasks.json /tmp/rclone-tasks.json
 
-# Install Dotfiles
-RUN git clone https://github.com/martokk/dotfiles /home/coder/dotfiles
-RUN make -C /home/coder/dotfiles install profile=dev
-
 # Install ZSH, set shell to zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions /home/coder/.oh-my-zsh/plugins/zsh-autosuggestions
@@ -71,6 +67,10 @@ RUN code-server --install-extension usernamehw.errorlens
 RUN code-server --install-extension VisualStudioExptTeam.intellicode-api-usage-examples
 RUN code-server --install-extension VisualStudioExptTeam.vscodeintellicode
 RUN code-server --install-extension VisualStudioExptTeam.vscodeintellicode-completions
+
+# Install Dotfiles
+RUN git clone https://github.com/martokk/dotfiles /home/coder/dotfiles
+RUN make -C /home/coder/dotfiles install profile=dev
 
 # Port
 ENV PORT=8080
