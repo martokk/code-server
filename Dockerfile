@@ -2,10 +2,10 @@
 FROM codercom/code-server:latest
 
 USER coder
-RUN sudo chown -R coder:coder /home/coder/.local
 
 # Apply VS Code settings
 COPY deploy-container/settings.json .local/share/code-server/User/settings.json
+RUN sudo chown -R coder:coder /home/coder/.local
 
 # Install Inital Dependencies
 RUN sudo apt-get update
