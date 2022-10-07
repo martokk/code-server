@@ -30,6 +30,7 @@ ENV SHELL=/bin/zsh
 # RUN python3 -m pip install pip
 # RUN python3 -m pip install wheel
 
+
 # Setup Python3.10 Environment
 RUN echo "deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main" | sudo tee /etc/apt/sources.list.d/deadsnakes.list
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA6932366A755776
